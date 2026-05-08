@@ -2,12 +2,12 @@
 // ---------------------------------------------------------------------------------------------------------
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Plane } from "@react-three/drei";
-import { useRef, useMemo } from "react";
+import { useRef } from "react";
 import * as THREE from "three";
 import BokehParticles from "../components/BokehParticles";
 import LightTrails from "../components/LightTrails";
 import { EffectComposer, Bloom } from "@react-three/postprocessing";
-
+import { Vignette } from '@react-three/postprocessing';
 
 /* ---------- Fog Layer ---------- */
 function FogPlane({ z, scale, opacity, speed = 0.1 }) {
@@ -55,7 +55,7 @@ function LightPlane({ z, scale, hue, speed }) {
     <Plane ref={ref} args={[1, 1]} position={[0, 0, z]} scale={scale}>
       <meshBasicMaterial
         color={new THREE.Color(`hsl(${hue}, 20%, 40%)`)}
-        
+
         transparent
         blending={THREE.AdditiveBlending}
         opacity={0.1}
@@ -84,57 +84,59 @@ function ParallaxCamera() {
 }
 
 /* ---------- Vignette ---------- */
-function Vignette() {
-  const texture = useMemo(() => {
-    const size = 512;
-    const canvas = document.createElement("canvas");
-    canvas.width = size;
-    canvas.height = size;
+// function Vignette() {
+//   const texture = useMemo(() => {
+//     const size = 512;
+//     const canvas = document.createElement("canvas");
+//     canvas.width = size;
+//     canvas.height = size;
 
-    const ctx = canvas.getContext("2d");
-    const gradient = ctx.createRadialGradient(
-      size / 2,
-      size / 2,
-      size * 0.2,
-      size / 2,
-      size / 2,
-      size / 2
-    );
+//     const ctx = canvas.getContext("2d");
+//     const gradient = ctx.createRadialGradient(
+//       size / 2,
+//       size / 2,
+//       size * 0.2,
+//       size / 2,
+//       size / 2,
+//       size / 2
+//     );
 
-    gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
-    gradient.addColorStop(0.7, "rgba(0,0,0,0.2)");
-    gradient.addColorStop(1, "rgba(0,0,0,0.55)");
+//     gradient.addColorStop(0, "rgba(0, 0, 0, 0)");
+//     gradient.addColorStop(0.7, "rgba(0,0,0,0.2)");
+//     gradient.addColorStop(1, "rgba(0,0,0,0.55)");
 
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, size, size);
+//     ctx.fillStyle = gradient;
+//     ctx.fillRect(0, 0, size, size);
 
-    return new THREE.CanvasTexture(canvas);
-  }, []);
+//     return new THREE.CanvasTexture(canvas);
+//   }, []);
 
-  return (
-    <mesh position={[0, 0, 4.9]}>
-      <planeGeometry args={[20, 12]} />
-      <meshBasicMaterial
-        map={texture}
-        transparent
-        depthWrite={false}
-        toneMapped={false}
-      />
-    </mesh>
-  );
-}
+//   return (
+//     <mesh position={[0, 0, 4.9]}>
+//       <planeGeometry args={[20, 12]} />
+//       <meshBasicMaterial
+//         map={texture}
+//         transparent
+//         depthWrite={false}
+//         toneMapped={false}
+//       />
+//     </mesh>
+//   );
+// }
 
 
 /* ---------- Main Background Scene ---------- */
 export default function BackgroundScene() {
   return (
-    <div className="background-canvas"
-     style={{
+    <div
+      className="background-canvas"
+      style={{
         position: "fixed",
         inset: 0,
         zIndex: -10,
         opacity: 0.7,
-      }}>
+      }}
+    >
       <Canvas
         camera={{ position: [0, 0, 5], fov: 60 }}
         gl={{ antialias: true }}
@@ -145,8 +147,6 @@ export default function BackgroundScene() {
 
         <ParallaxCamera />
 
-        
-
         {/* fog layers */}
         <FogPlane z={0} scale={[10, 7, 1]} opacity={0.15} speed={0.18} />
         <FogPlane z={-1.5} scale={[14, 7, 1]} opacity={0.1} speed={0.06} />
@@ -154,21 +154,23 @@ export default function BackgroundScene() {
         <FogPlane z={-4.5} scale={[22, 7, 1]} opacity={0.06} speed={0.025} />
 
         <BokehParticles />
-        
+
         <EffectComposer>
           <Bloom
-            intensity={0.6}
+            intensity={3.5}
+            kernelSize={2.5}
             luminanceThreshold={0.2}
             luminanceSmoothing={0.9}
+          />
+          <Vignette
+            offset={0.5} // Darkness from edges (0-1; higher = more vignette)
+            darkness={0.2} // Intensity (0-1; adjust for subtlety)
           />
         </EffectComposer>
 
         {/* light drift layers */}
         <LightPlane z={-0.5} scale={[6, 4, 1]} hue={210} speed={0.15} />
         <LightPlane z={-2} scale={[8, 5, 1]} hue={260} speed={0.1} />
-        
-        {/* vignette */}
-        <Vignette />
       </Canvas>
     </div>
   );

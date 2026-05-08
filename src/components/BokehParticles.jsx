@@ -2,6 +2,7 @@ import { Points, PointMaterial } from "@react-three/drei";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import { useFrame } from "@react-three/fiber";
+import { EffectComposer, Bloom } from "@react-three/postprocessing";
 
 function generatePositions(count) {
   const arr = new Float32Array(count * 3);
@@ -30,10 +31,12 @@ export default function BokehParticles({ count = 80 }) {
       <PointMaterial
         transparent
         color="#e6f0ff" // soft bluish white
+        emissive="#a78bfa"
+        emissiveIntensity={8}
         size={0.5}
         sizeAttenuation
         depthWrite={false}
-        opacity={0.07}
+        opacity={0.1}
         blending={THREE.AdditiveBlending}
       />
     </Points>

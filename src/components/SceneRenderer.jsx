@@ -13,25 +13,19 @@ const SCENES = {
 };
 
 export default function SceneRenderer({ vibe, setVibe }) {
-  const Scene = SCENES[vibe] || Neutral;
-  
-
- const handleComplete = useCallback(() => {
-  setVibe("playful-door");
- }, [setVibe]);
- 
-
+  const Scene = SCENES[vibe] || Neutral; 
+  const handleComplete = useCallback(() => { setVibe("playful-door"); }, [setVibe]);
   if (vibe === "playful-transition") {
-     
     return (
-      <div style={{ position: "relative" }}>
-        <PlayfulTransitionScene onComplete={handleComplete} />
-        <div style={{ position: "absolute", inset: 0, pointerEvents: "none", opacity: 0 }}>
-          <PlayfulDoorScene />
-        </div>
-      </div>
+      <>
+        <PlayfulDoorScene /> {/* Mount immediately underneath */}
+        <PlayfulTransitionScene
+          onComplete={handleComplete}
+        />
+      </>
     );
   }
+
 
   if (vibe === "playful-door") {
     return <PlayfulDoorScene />;

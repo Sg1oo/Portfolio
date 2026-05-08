@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import IntroGate from "./components/IntroGate.jsx";
 import SceneRenderer from "./components/SceneRenderer.jsx";
-import Layout from "./components/Layout.jsx";
+import Layout from "./components/Layout.jsx"
 
 
 export default function App() {
