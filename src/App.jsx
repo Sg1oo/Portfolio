@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import IntroGate from "./components/IntroGate.jsx";
 import SceneRenderer from "./components/SceneRenderer.jsx";
-import Layout from "./components/Layout.jsx"
+import Layout from "./components/Layout.jsx";
 
 
 export default function App() {
@@ -18,9 +18,14 @@ export default function App() {
       return () => clearTimeout(timer);
     }
   }, [vibe]);
+  
+  const hideBackgroundScene =
+    vibe === "playful" ||
+    vibe === "playful-transition" ||
+    vibe === "playful-door";
 
   return (
-    <Layout>
+    <Layout hideBackgroundScene={hideBackgroundScene}>
       {showIntro && (
         <IntroGate onSelect={setVibe} fading={vibe === "playful-transition"}/>
       ) } {vibe &&(

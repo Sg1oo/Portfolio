@@ -1,11 +1,11 @@
 import BackgroundScene from "./BackgroundScene.jsx";
 import VantaFogBackground from "./VantaFogBackground";
 
-export default function Layout({ children }) {
+export default function Layout({ children, hideBackgroundScene }) {
   return (
     <div className="layout">
       <VantaFogBackground />
-      <BackgroundScene />
+      {!hideBackgroundScene && <BackgroundScene />}
 
       <header className="layout-header">
         <span className="logo">VIBE</span>

@@ -10,6 +10,7 @@ import HallwayScene from "../components/HallWayScenee";
 import LeftSideLayer from "../assets/left_side_layer.png"
 import RightSideLayer from "../assets/right_side_layer.png"
 import BackgroundLayer from "../assets/dense_bckgrnd.png"
+import VantaBGforHallway from "../components/VantaBGforHallway";
 
 const PHASE_SEQUENCE = ["approach", "ready", "entering", "transition", "done", "hallway"];
 
@@ -295,16 +296,19 @@ export default function PlayfulDoorScene() {
 
   return (
     <>
+      {phase === "hallway" && <VantaBGforHallway />}
+
       <Canvas
         camera={{ position: [0, 0, 5], fov: 60 }}
-        style={{ position: "fixed", inset: 0 }}
+        gl={{ alpha: true, antialias: true }}
+        style={{ position: "fixed", inset: 0, background: "transparent" }}
       >
         <fogExp2 attach="fog" args={["#0b0b0b", 0.04]} />
-        <color attach="background" args={["black"]} />
         <SceneController phase={phase} progress={progress} />
 
         {phase !== "hallway" && (
           <>
+            <color attach="background" args={["black"]} />
             <EffectComposer>
               <Bloom
                 intensity={phase === "approach" || phase === "ready" ? 4 : 1.5}
@@ -421,7 +425,12 @@ export default function PlayfulDoorScene() {
             <ForestBackgroundLayer textureUrl={BackgroundLayer} z={-25.0} />
           </>
         )}
-        {phase === "hallway" && <HallwayScene phase={phase} />}
+        {phase === "hallway" && (
+          <>
+            <HallwayScene phase={phase} />
+            
+          </>
+        )}
       </Canvas>
       {phase === "ready" && (
         <div
